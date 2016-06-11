@@ -1,0 +1,24 @@
+Package: ggb
+Type: Package
+Title: Graph-Guided Banding of the Covariance Matrix
+Version: 0.9.0
+Date: 2016
+Authors@R: person("Jacob", "Bien", email = "jbien@cornell.edu", role = c("aut", "cre"))
+Maintainer: Jacob Bien <jbien@cornell.edu>
+Description: Implementation of the two graph-guided banding estimators of
+             Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix."
+URL: http://arxiv.org/abs/1606.00451
+Depends:
+    hsm
+Imports:
+    stats,
+    graphics,
+    Matrix,
+    igraph
+License: GPL-3
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1
+Suggests: testthat,
+    knitr,
+    rmarkdown

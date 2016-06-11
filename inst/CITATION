@@ -1,0 +1,6 @@
+bibentry(bibtype = "article",
+         title = "Graph-Guided Banding of the Covariance Matrix",
+         author = person("Jacob", "Bien"),
+         year = {2016},
+         journal = "Submitted",
+	 url = "http://arxiv.org/abs/1606.00451")

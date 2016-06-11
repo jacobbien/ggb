@@ -1,0 +1,101 @@
+---
+title: "Using GGB Package"
+author: "Jacob Bien"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using GGB Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette describes basic usage of the `ggb` R package, which implements the methods introduced in [Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix"](http://arxiv.org/abs/1606.00451).
+
+We begin by generating a covariance matrix that is banded with respect to a graph (as in Definition 1 of the [paper](http://arxiv.org/abs/1606.00451)).
+
+### Generating some synthetic data
+
+We begin by generating the true covariance matrix using the function `generate_gb_covariance`.  We imagine that the variables lie on a $5\times 4$ lattice and that any pair of variables with 2 hops of each other is correlated.
+
+```{r}
+library(ggb)
+g <- igraph::graph.lattice(c(5, 4))
+p <- 5 * 4
+b <- rep(1, p)
+Sig <- generate_gb_covariance(g, b)
+```
+
+We now generate zero-mean multivariate normal data having this covariance matrix:
+```{r}
+set.seed(123)
+n <- 30
+eig <- eigen(Sig)
+A <- diag(sqrt(eig$values)) %*% t(eig$vectors)
+x <- matrix(rnorm(n * p), n, p) %*% A
+S <- cov(x)
+```
+
+```{r,fig.show='hold'}
+image_covariance(Sig, main = "True covariance")
+image_covariance(S, main = "Sample covariance")
+```
+
+### Applying the GGB methods
+
+#### Global GGB method
+
+The function `ggb` can be used to fit the graph-guided banding estimators.
+
+```{r}
+fit <- ggb(S, g, type = "global", flmin = 0.2)
+```
+
+This computes the global GGB estimator along a grid of $\lambda$ values (given by `fit$lambda`).  By default, no eigenvalue constraint is applied; however, the argument `delta` can be used to specify a lower bound on the eigenvalues.  In this case, we see that all $\hat\Sigma_\lambda$ computed are positive definite:
+```{r}
+min(unlist(lapply(fit$Sig, function(M) eigen(M, only.values = TRUE)$values)))
+```
+
+We can use `plot` to look at the computed $\hat\Sigma_\lambda$:
+
+```{r, fig.width=5, fig.height=5}
+plot(fit, subset = round(seq(1, length(fit$lambda), length = 9)))
+```
+
+To select $\lambda$, one can use cross validation.  By default, Frobenius-norm error and five folds are used, but these can be changed (see `?cv_ggb` for details).
+
+```{r, fig.width=5, fig.height=5}
+cv <- cv_ggb(x, fit, g)
+plot(cv)
+Sighat <- fit$Sig[[cv$i1se]]
+```
+
+We use the one standard error rule and get something that looks very similar to the true covariance matrix:
+
+```{r,fig.show='hold'}
+image_covariance(Sig, main = "True covariance")
+image_covariance(Sighat, main = "GGB estimate")
+```
+
+#### Local GGB method
+
+We could instead fit the local GGB estimator to the data.
+
+```{r}
+fit2 <- ggb(S, g, type = "local", flmin = 0.2)
+```
+
+```{r, fig.width=5, fig.height=5}
+plot(fit2, subset = round(seq(1, length(fit$lambda), length = 9)))
+```
+
+```{r, fig.width=5, fig.height=5}
+cv2 <- cv_ggb(x, fit2, g)
+plot(cv2)
+Sighat2 <- fit2$Sig[[cv2$i1se]]
+```
+
+In this case, we get an estimate that resembles the true covariance matrix but is a little too sparse.
+```{r,fig.show='hold'}
+image_covariance(Sig, main = "True covariance")
+image_covariance(Sighat2, main = "GGB estimate")
+```
