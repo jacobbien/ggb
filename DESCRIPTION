@@ -7,7 +7,8 @@ Authors@R: person("Jacob", "Bien", email = "jbien@cornell.edu", role = c("aut", 
 Maintainer: Jacob Bien <jbien@cornell.edu>
 Description: Implementation of the two graph-guided banding estimators of
              Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix."
-URL: http://arxiv.org/abs/1606.00451
+URL: <http://arxiv.org/abs/1606.00451>
+BugReports: <https://github.com/jacobbien/ggb/issues>
 Depends:
     hsm
 Imports:
