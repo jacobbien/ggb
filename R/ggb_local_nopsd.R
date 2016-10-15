@@ -1,7 +1,7 @@
 #' Evaluate the GGB-Local Penalty Proximal Operator Along Grid of Lambda Values
 #'
-#'  Returns sumvv which can be thought of as a (p choose 2)-by-nlam matrix,
-#'  each column being the lower triangle of sum_jb V_jb.
+#'  Returns \code{Sig}, a (length \code{nlam}) list of \code{Matrix} objects,
+#'  with \code{Sig[[l]]} being the solution for the l-th lambda value.
 #'
 #' @param S a symmetric, p by p matrix
 #' @param g seed graph
@@ -38,7 +38,8 @@ ggb_local_nopsd <- function(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 
 #' @param D matrix of graph distances
 #' @param M p-vector of maximal bandwidths
 #' @param lambda a vector of positive tuning parameters. If NULL, uses
-#'        \code{nlam}, \code{flmin} to produce a grid
+#'        \code{nlam}, \code{flmin} to produce a grid (formation of lambda grid
+#'        in this case is done within C)
 #' @param nlam number of lambda values (ignored if \code{lambda} is nonnull)
 #' @param flmin ratio of smallest to largest lambda value (ignored if
 #'        \code{lambda} is nonnull)
@@ -62,7 +63,7 @@ prox_bcd <- function(R, D, M, lambda = NULL, nlam = 20, flmin = 0.01,
   } else {
     stopifnot(lambda > 0)
     nlam = length(lambda)
-    flmin = -1  # this will be used in C to determine that lambda is being passed
+    flmin = -1 # this is used in C to determine that lambda is being passed
   }
   out <- .C("pathwiseprox_bcd3",
             rr = as.double(R[lower.tri(R)]),
