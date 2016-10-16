@@ -31,8 +31,21 @@ test_that("output beats Convex.jl", {
 
 test_that("largest lambda gives diagonal matrix", {
   fit <- ggb::ggb(S, g, type = "global", nlam = 2, delta = NULL)
-  fit$Sig[[1]][abs(fit$Sig[[1]]) < 1e-16] <- 0
+  #fit$Sig[[1]][abs(fit$Sig[[1]]) < 1e-16] <- 0
   expect_true(Matrix::isDiagonal(fit$Sig[[1]]))
+
+  # example from vignette:
+  set.seed(123)
+  gg <- igraph::graph.lattice(c(5, 4))
+  pp <- 5 * 4
+  bb <- rep(1, pp)
+  Sigg <- generate_gb_covariance(gg, bb)
+  nn <- 30
+  eigg <- eigen(Sigg)
+  AA <- diag(sqrt(eigg$values)) %*% t(eigg$vectors)
+  xx <- matrix(rnorm(nn * pp), nn, pp) %*% AA
+  fitt <- ggb::ggb(S = cov(xx), g = gg, type = "global", nlam = 2, delta = NULL)
+  expect_true(Matrix::isDiagonal(fitt$Sig[[1]]))
 })
 
 test_that("solving pathwise gives same results as one-at-a-time", {

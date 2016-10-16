@@ -157,7 +157,7 @@ compute_lammax_global <- function(S, g, max_depths = NULL) {
   for (d in seq(depth)) {
     m[d] <- mean(S[D <= d & D > 0]^2)
   }
-  sqrt(max(m))
+  sqrt(max(m)) * (1 + 1e-6) # slight inflation to make sure it is diagonal
 }
 
 
@@ -176,5 +176,5 @@ compute_lammax_local <- function(S, g, max_depths = NULL) {
       i <- i + 1
     }
   }
-  sqrt(max(m))
+  sqrt(max(m)) * (1 + 1e-6) # slight inflation to make sure it is diagonal
 }

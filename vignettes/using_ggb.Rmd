@@ -47,7 +47,7 @@ image_covariance(S, main = "Sample covariance")
 The function `ggb` can be used to fit the graph-guided banding estimators.
 
 ```{r}
-fit <- ggb(S, g, type = "global", flmin = 0.2)
+fit <- ggb(S, g, type = "global")
 ```
 
 This computes the global GGB estimator along a grid of $\lambda$ values (given by `fit$lambda`).  By default, no eigenvalue constraint is applied; however, the argument `delta` can be used to specify a lower bound on the eigenvalues.  In this case, we see that all $\hat\Sigma_\lambda$ computed are positive definite:
@@ -69,19 +69,27 @@ plot(cv)
 Sighat <- fit$Sig[[cv$i1se]]
 ```
 
-We use the one standard error rule and get something that looks very similar to the true covariance matrix:
+We use the one standard error rule and get something that is quite a bit denser than the true covariance matrix:
 
 ```{r,fig.show='hold'}
 image_covariance(Sig, main = "True covariance")
 image_covariance(Sighat, main = "GGB estimate")
 ```
 
+However, this is only two grid values away from an estimate with a very similar sparsity pattern to the true covariance matrix:
+
+```{r,fig.show='hold'}
+image_covariance(Sig, main = "True covariance")
+image_covariance(fit$Sig[[cv$i1se - 2]], main = "GGB estimate")
+```
+
+
 #### Local GGB method
 
 We could instead fit the local GGB estimator to the data.
 
 ```{r}
-fit2 <- ggb(S, g, type = "local", flmin = 0.2)
+fit2 <- ggb(S, g, type = "local")
 ```
 
 ```{r, fig.width=5, fig.height=5}
@@ -94,8 +102,9 @@ plot(cv2)
 Sighat2 <- fit2$Sig[[cv2$i1se]]
 ```
 
-In this case, we get an estimate that resembles the true covariance matrix but is a little too sparse.
+While again this is quite a bit denser than the true covariance matrix, there is a bigger value of lambda for which the sparsity patter does resemble that of the true covariance matrix:
 ```{r,fig.show='hold'}
 image_covariance(Sig, main = "True covariance")
-image_covariance(Sighat2, main = "GGB estimate")
+image_covariance(Sighat2, main = "GGB estimate (CV)")
+image_covariance(fit2$Sig[[2]], main = "GGB estimate")
 ```
