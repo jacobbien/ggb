@@ -47,14 +47,14 @@ cv_ggb <- function(x, fit, g, errfun = NULL, nfolds = 5, ...) {
     stop("fit must have at least one lambda value.")
   stopifnot(nrow(fit$Sig[[1]]) == p)
   if (is.null(errfun)) {
-    errfun <- function(est, true) sum(as.matrix(est) - as.matrix(true))^2
+    errfun <- function(est, true) mean((as.matrix(est) - as.matrix(true))^2)
   }
   folds <- make_folds(n, nfolds)
   nlam <- length(fit$lambda)
   errs <- matrix(NA, nlam, nfolds)
   for (i in seq(nfolds)) {
     # train on all but i-th fold (and use settings from fit):
-    fitcv <- ggb(stats::cov(x[-folds[[i]], ]), g = g, type = fit$type,
+    fitcv <- ggb(S = stats::cov(x[-folds[[i]], ]), g = g, type = fit$type,
                  lambda = fit$lambda, delta=fit$delta, ...)
     # evaluate this on left-out fold:
     Sig.te <- stats::cov(x[folds[[i]], ])
