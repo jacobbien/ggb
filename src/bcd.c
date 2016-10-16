@@ -68,9 +68,10 @@ void pathwiseprox_bcd3(double *rr, int *dd, int *M, double *lamlist, int *nlam, 
   // get lamlist
   if (*flmin != -1) {
     // this means that lamlist was not passed and we need to compute it from flmin and nlam
-    Rprintf("computing lamlist... with nlam = %d and flmin = %g\n", *nlam, *flmin);
+    if (*verbose > 0)
+      Rprintf("computing lamlist... with nlam = %d and flmin = %g\n", *nlam, *flmin);
     compute_lamlist(rr, *p, M, elem, nelem, ngelem, *nlam, *flmin, lamlist);
-    print_matrix(lamlist, *nlam, 1);
+    if (*verbose > 0) print_matrix(lamlist, *nlam, 1);
   }
 
   for (l = 0; l < *nlam; l++) { // loop over lambda values
