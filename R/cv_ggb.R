@@ -55,7 +55,7 @@ cv_ggb <- function(x, fit, g, errfun = NULL, nfolds = 5, ...) {
   for (i in seq(nfolds)) {
     # train on all but i-th fold (and use settings from fit):
     fitcv <- ggb(stats::cov(x[-folds[[i]], ]), g = g, type = fit$type,
-                 lambda = fit$lambda, delta=fit$delta, w = fit$w, ...)
+                 lambda = fit$lambda, delta=fit$delta, ...)
     # evaluate this on left-out fold:
     Sig.te <- stats::cov(x[folds[[i]], ])
     for (l in seq(nlam)) errs[l, i] <- errfun(fit$Sig[[l]], Sig.te)
