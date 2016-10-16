@@ -15,7 +15,8 @@ prox_bcd(R, D, M, lambda = NULL, nlam = 20, flmin = 0.01, maxiter = 100,
 \item{M}{p-vector of maximal bandwidths}
 
 \item{lambda}{a vector of positive tuning parameters. If NULL, uses
-\code{nlam}, \code{flmin} to produce a grid}
+\code{nlam}, \code{flmin} to produce a grid (formation of lambda grid
+in this case is done within C)}
 
 \item{nlam}{number of lambda values (ignored if \code{lambda} is nonnull)}
 

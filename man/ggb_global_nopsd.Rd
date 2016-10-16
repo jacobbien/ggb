@@ -4,7 +4,8 @@
 \alias{ggb_global_nopsd}
 \title{Compute the Global GGB estimator without psd constraint}
 \usage{
-ggb_global_nopsd(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20)
+ggb_global_nopsd(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20,
+  max_depths = NULL)
 }
 \arguments{
 \item{S}{p-by-p sample covariance matrix}
@@ -19,6 +20,11 @@ ggb_global_nopsd(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20)
 \code{lambda} is nonnull)}
 
 \item{nlam}{number of lambda values (ignored if \code{lambda} is nonnull)}
+
+\item{max_depths}{maximal bandwidth considered.  Should be a single
+non-negative integer.  Default is NULL, which
+is equivalent to taking max_depths to be >= diameter(g).  (This is
+referred to as M in the paper.)}
 }
 \description{
 Uses the path BCD "closed form" of Yan and Bien (2015) as implemented

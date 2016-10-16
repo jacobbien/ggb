@@ -7,8 +7,8 @@
 \title{ggb: Graph-Guided Banding for Covariance Estimation}
 \usage{
 ggb(S, g, type = c("global", "local"), lambda = NULL, delta = NULL,
-  w = NULL, flmin = 0.01, nlam = 20, out_iter = 100, in_iter = 500,
-  out_tol = 1e-04, in_tol = 1e-04, verbose = 0)
+  flmin = 0.01, nlam = 20, max_depths = NULL, out_iter = 100,
+  in_iter = 500, out_tol = 1e-04, in_tol = 1e-04, verbose = 0)
 }
 \arguments{
 \item{S}{p-by-p sample covariance matrix}
@@ -21,12 +21,16 @@ ggb(S, g, type = c("global", "local"), lambda = NULL, delta = NULL,
 
 \item{delta}{lower bound on eigenvalues (default, NULL, means no bound)}
 
-\item{w}{weights from b = 1 to diam(g). Default is sqrt( group size )}
-
 \item{flmin}{ratio of smallest to largest lambda value (ignored if
 \code{lambda} is nonnull)}
 
 \item{nlam}{number of lambda values (ignored if \code{lambda} is nonnull)}
+
+\item{max_depths}{maximal bandwidth(s) considered.  If type is "global",
+this must be a single non-negative integer.  If type is "local", this
+must be a p-vector of non-negative integers. Default is NULL, which
+is equivalent to taking max_depths to be >= diameter(g).  (These are
+referred to as M and M_j in the paper.)}
 
 \item{out_iter}{number of iterations of outer loop (i.e., # of eigenvalue
 decompositions). Ignored when \code{delta} is NULL.}
@@ -45,14 +49,13 @@ is "local".}
 }
 \description{
 This package implements the two methods introduced in
+Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix"
+\url{http://arxiv.org/abs/1606.00451}
 
 Computes the global or local GGB estimator (depending on \code{type}
 argument) along a grid of lambda values.
 }
 \details{
-Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix"
-\url{http://arxiv.org/abs/1606.00451}
-
 The main function is \code{\link{ggb}}.
 
 To evaluate the proximal operator, it uses the "closed form" of Yan and Bien
@@ -61,6 +64,8 @@ and uses blockwise coordinate descent for the local GGB estimator.
 
 If \code{delta} is non-NULL, then alternates between evaluating proximal
 operator and projecting eigenvalues.
+
+The weights used in this penalty are the square root of the group size.
 }
 \examples{
 set.seed(123)

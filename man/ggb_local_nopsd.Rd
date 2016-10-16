@@ -5,7 +5,7 @@
 \title{Evaluate the GGB-Local Penalty Proximal Operator Along Grid of Lambda Values}
 \usage{
 ggb_local_nopsd(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20,
-  maxiter = 500, tol = 1e-04, verbose = 1)
+  max_depths = NULL, maxiter = 500, tol = 1e-04, verbose = 1)
 }
 \arguments{
 \item{S}{a symmetric, p by p matrix}
@@ -22,6 +22,11 @@ ggb_local_nopsd(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20,
 
 \item{nlam}{number of lambda values (ignored if \code{lambda} is nonnull)}
 
+\item{max_depths}{maximal bandwidths considered.  Should be a p-vector of
+non-negative integers. Default is NULL, which is equivalent to taking
+max_depths to be >= diameter(g).  (These are referred to as M_j in
+the paper.)}
+
 \item{maxiter}{maximum number of passes through coordinates}
 
 \item{tol}{convergence threshold}
@@ -29,7 +34,7 @@ ggb_local_nopsd(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20,
 \item{verbose}{level of verbosity in printed output (2, 1, 0)}
 }
 \description{
-Returns sumvv which can be thought of as a (p choose 2)-by-nlam matrix,
- each column being the lower triangle of sum_jb V_jb.
+Returns \code{Sig}, a (length \code{nlam}) list of \code{Matrix} objects,
+ with \code{Sig[[l]]} being the solution for the l-th lambda value.
 }
 
