@@ -31,6 +31,7 @@ test_that("output beats Convex.jl", {
 
 test_that("largest lambda gives diagonal matrix", {
   fit <- ggb::ggb(S, g, type = "global", nlam = 2, delta = NULL)
+  fit$Sig[[1]][abs(fit$Sig[[1]]) < 1e-16] <- 0
   expect_true(Matrix::isDiagonal(fit$Sig[[1]]))
 })
 

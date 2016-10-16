@@ -11,18 +11,30 @@
 #' @param flmin ratio of smallest to largest lambda value (ignored if
 #'        \code{lambda} is nonnull)
 #' @param nlam number of lambda values (ignored if \code{lambda} is nonnull)
+#' @param max_depths maximal bandwidths considered.  Should be a p-vector of
+#'        non-negative integers. Default is NULL, which is equivalent to taking
+#'        max_depths to be >= diameter(g).  (These are referred to as M_j in
+#'        the paper.)
 #' @param maxiter maximum number of passes through coordinates
 #' @param tol convergence threshold
 #' @param verbose level of verbosity in printed output (2, 1, 0)
-ggb_local_nopsd <- function(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 20,
-                        maxiter = 500, tol = 1e-4, verbose = 1) {
+ggb_local_nopsd <- function(S, g, lambda = NULL, w = NULL, flmin = 0.01,
+                            nlam = 20, max_depths = NULL, maxiter = 500,
+                            tol = 1e-4, verbose = 1) {
   if (!is.null(w)) stop("general w not implemented in c function yet.")
   D <- igraph::shortest.paths(g)
   D[D == Inf] <- -1
   M <- apply(D, 1, max)
-  D[D == -1] <- max(M) + 1 # instead of infinity, we use 1 larger than all the M's.
+  if (!is.null(max_depths)) {
+    stopifnot(length(max_depths) == vcount(g),
+              max_depths >= 0,
+              max_depths == round(max_depths))
+    M <- pmin(M, max_depths)
+  }
+  D[D == -1] <- max(M) + 1 # instead of Inf, we use 1 larger than all the M's.
   out <- prox_bcd(R = S, D = D, M = M, lambda = lambda, nlam = nlam,
-            flmin = flmin, maxiter = maxiter, tol = tol, verbose = verbose)
+                  flmin = flmin, maxiter = maxiter, tol = tol,
+                  verbose = verbose)
   list(Sig = out$sumV, lambda = out$lambda, obj = out$obj)
 }
 
@@ -48,12 +60,12 @@ ggb_local_nopsd <- function(S, g, lambda = NULL, w = NULL, flmin = 0.01, nlam = 
 #' @param verbose level of verbosity in printed output (2, 1, 0)
 #' @useDynLib ggb
 prox_bcd <- function(R, D, M, lambda = NULL, nlam = 20, flmin = 0.01,
-                      maxiter = 100, tol = 1e-4, verbose = 1) {
+                     maxiter = 100, tol = 1e-4, verbose = 1) {
   # calls C function
   #
   # void pathwiseprox_bcd3(double *rr, int *dd, int *M, double *lamlist,
-  # int *nlam, double *flmin, int *p, double *sumvv, double *obj,
-  # int *maxiter, double *tol, int *verbose)
+  # int *nlam, double *flmin, int *p, double *sumvv, double *obj, int *maxiter,
+  # double *tol, int *verbose)
   #
   p <- nrow(R)
   stopifnot(is.matrix(D))

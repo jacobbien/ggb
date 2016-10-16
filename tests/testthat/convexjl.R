@@ -12,14 +12,17 @@ ggb_local_convexjl <- function(S, lam, g, delta = NULL) {
   p <- nrow(S)
   stopifnot(igraph::vcount(g) == p)
   D <- igraph::shortest.paths(g)
+  D[D == Inf] <- 0
   depths <- apply(D, 1, max)
   w <- rep(NA, sum(depths))
   i <- 1
-  for (j in seq(p))
+  for (j in seq(p)) {
+    if (depths[j] == 0) next
     for (d in seq(depths[j])) {
       w[i] <- sqrt(2 * sum(D[j, ] <= d & D[j, ] > 0))
       i <- i + 1
     }
+  }
   if (is.null(delta)) {
     psd <- ""; delta <- 0
   } else
@@ -31,6 +34,9 @@ ggb_local_convexjl <- function(S, lam, g, delta = NULL) {
     "i = 1",
     "for j = 1:p",
     "for d = 1:depths[j]",
+    "if depths[j] == 0",
+    "continue",
+    "end",
     "notj = setdiff(1:p, j)",
     "pr.constraints += V[i][notj, notj] == 0",
     "njd = find(0 .< D[j, :] .<= d)", # d-neighborhood of j
@@ -70,6 +76,7 @@ ggb_local_convexjl <- function(S, lam, g, delta = NULL) {
   norms <- sqrt(apply(V^2, 3, sum))
   i <- 1
   for (j in seq(p)) {
+    if (depths[j] == 0) next
     for (d in seq(depths[j])) {
       penval[j] <- penval[j] + lam * w[i] * norms[i]
       i <- i + 1
@@ -95,6 +102,7 @@ ggb_global_convexjl <- function(S, lam, g, delta = NULL) {
   p <- nrow(S)
   stopifnot(igraph::vcount(g) == p)
   D <- igraph::shortest.paths(g)
+  D[D == Inf] <- 0
   depth <- max(D)
   w <- rep(NA, depth)
   for (d in seq(depth)) {

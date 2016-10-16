@@ -10,26 +10,26 @@
 #' @param flmin ratio of smallest to largest lambda value (ignored if
 #'        \code{lambda} is nonnull)
 #' @param nlam number of lambda values (ignored if \code{lambda} is nonnull)
+#' @param max_depths maximal bandwidth considered.  Should be a single
+#'        non-negative integer.  Default is NULL, which
+#'        is equivalent to taking max_depths to be >= diameter(g).  (This is
+#'        referred to as M in the paper.)
 ggb_global_nopsd <- function(S, g, lambda = NULL, w = NULL, flmin = 0.01,
-                             nlam = 20) {
+                             nlam = 20, max_depths = NULL) {
   p <- nrow(S)
   stopifnot(igraph::vcount(g) == p)
+
   D <- igraph::shortest.paths(g)
   D[D == Inf] <- 0 # Inf occurs when g is not connected.
   # Edges b/w components should not be assigned to any group
+  D[D > max_depths] <- 0 # no pairs that are beyond max_depths from each other
   if (is.null(w)) {
     # default is sqrt of group size
-    w <- as.numeric(sqrt(cumsum(table(D[D != 0]))))
+    w <- as.numeric(sqrt(cumsum(tabulate(D[D != 0]))))
   }
   if (is.null(lambda)) {
     # produce smallest lambda that ensures Sig is diagonal
-    diam <- max(D)
-    m <- rep(NA, diam)
-    for (d in seq(diam)) {
-      m[d] <- sum(S[D <= d & D > 0]^2)
-    }
-    m <- m / w^2
-    lammax <- sqrt(max(m))
+    lammax <- compute_lammax_global(S = S, g = g, max_depths = max_depths)
     lambda <- lammax * exp(seq(0, log(flmin), length = nlam))
   } else {
     nlam <- length(lambda)
