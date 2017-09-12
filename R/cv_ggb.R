@@ -58,7 +58,7 @@ cv_ggb <- function(x, fit, g, errfun = NULL, nfolds = 5, ...) {
                  lambda = fit$lambda, delta=fit$delta, ...)
     # evaluate this on left-out fold:
     Sig.te <- stats::cov(x[folds[[i]], ])
-    for (l in seq(nlam)) errs[l, i] <- errfun(fit$Sig[[l]], Sig.te)
+    for (l in seq(nlam)) errs[l, i] <- errfun(fitcv$Sig[[l]], Sig.te)
   }
   m <- rowMeans(errs)
   se <- apply(errs, 1, stats::sd) / sqrt(nfolds)
