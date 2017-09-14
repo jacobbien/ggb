@@ -66,21 +66,20 @@ To select $\lambda$, one can use cross validation.  By default, Frobenius-norm e
 ```{r, fig.width=5, fig.height=5}
 cv <- cv_ggb(x, fit, g)
 plot(cv)
-Sighat <- fit$Sig[[cv$i1se]]
+Sighat <- fit$Sig[[cv$ibest]]
 ```
 
-We use the one standard error rule and get something that is quite a bit denser than the true covariance matrix:
+We find that the $\lambda$ value with minimal cross validation error gives something close to the true covariance matrix:
 
 ```{r,fig.show='hold'}
 image_covariance(Sig, main = "True covariance")
-image_covariance(Sighat, main = "GGB estimate")
+image_covariance(Sighat, main = "GGB estimate (CV)")
 ```
 
-However, this is only two grid values away from an estimate with a very similar sparsity pattern to the true covariance matrix:
+In this case, if we use the one-standard-error rule, we get a diagonal matrix:
 
 ```{r,fig.show='hold'}
-image_covariance(Sig, main = "True covariance")
-image_covariance(fit$Sig[[cv$i1se - 2]], main = "GGB estimate")
+image_covariance(fit$Sig[[cv$i1se]], main = "GGB estimate")
 ```
 
 
@@ -99,12 +98,12 @@ plot(fit2, subset = round(seq(1, length(fit$lambda), length = 9)))
 ```{r, fig.width=5, fig.height=5}
 cv2 <- cv_ggb(x, fit2, g)
 plot(cv2)
-Sighat2 <- fit2$Sig[[cv2$i1se]]
+Sighat2 <- fit2$Sig[[cv2$ibest]]
 ```
 
-While again this is quite a bit denser than the true covariance matrix, there is a bigger value of lambda for which the sparsity patter does resemble that of the true covariance matrix:
+Since in truth the global structure holds, we find that the added flexibility is not very helpful in this example.  Yet, it does appear that the lambda chosen by cross validation leads to a reasonable estimate of the covariance matrix.  As in the previous case, we find that the one-standard-error rule selects a diagonal matrix:
 ```{r,fig.show='hold'}
 image_covariance(Sig, main = "True covariance")
 image_covariance(Sighat2, main = "GGB estimate (CV)")
-image_covariance(fit2$Sig[[2]], main = "GGB estimate")
+image_covariance(fit2$Sig[[cv2$i1se]], main = "GGB estimate")
 ```
