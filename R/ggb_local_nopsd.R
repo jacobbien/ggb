@@ -26,7 +26,7 @@ ggb_local_nopsd <- function(S, g, lambda = NULL, w = NULL, flmin = 0.01,
   D[D == Inf] <- -1
   M <- apply(D, 1, max)
   if (!is.null(max_depths)) {
-    stopifnot(length(max_depths) == vcount(g),
+    stopifnot(length(max_depths) == igraph::vcount(g),
               max_depths >= 0,
               max_depths == round(max_depths))
     M <- pmin(M, max_depths)
