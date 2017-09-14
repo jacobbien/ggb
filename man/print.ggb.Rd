@@ -14,4 +14,3 @@
 \description{
 Print output for a GGB object
 }
-

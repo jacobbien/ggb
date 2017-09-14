@@ -30,4 +30,3 @@ referred to as M in the paper.)}
 Uses the path BCD "closed form" of Yan and Bien (2015) as implemented
 in R package \pkg{hsm}.
 }
-

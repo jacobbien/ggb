@@ -55,4 +55,3 @@ Sighat <- fit$Sig[[cv$i1se]]
 \seealso{
 \code{\link{ggb}}
 }
-

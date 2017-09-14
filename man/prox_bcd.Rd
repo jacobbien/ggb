@@ -37,4 +37,3 @@ Returns sumvv which can be thought of as a (p choose 2)-by-nlam matrix,
 argmin 0.5 * || R - sum_jb V_jb ||_F^2 + lam * sum_jb w_jb || V_jb ||_F
  where V_jb is 0 off of g_jb.
 }
-

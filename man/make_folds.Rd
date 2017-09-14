@@ -14,4 +14,3 @@ make_folds(n, nfolds)
 \description{
 Divides the indices \code{1:n} into \code{nfolds} random folds of about the same size.
 }
-

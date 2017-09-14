@@ -22,4 +22,3 @@ b, w, and pen (value of lam * Omega(b) )
 \description{
 Calls C function defined in R package \pkg{hsm}.
 }
-

@@ -24,4 +24,3 @@ g <- igraph::graph.lattice(c(5, 4))
 b <- rep(1, 20)
 Sig <- generate_gb_covariance(g, b)
 }
-

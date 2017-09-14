@@ -37,4 +37,3 @@ the paper.)}
 Returns \code{Sig}, a (length \code{nlam}) list of \code{Matrix} objects,
  with \code{Sig[[l]]} being the solution for the l-th lambda value.
 }
-

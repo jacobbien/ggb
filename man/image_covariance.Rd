@@ -20,4 +20,3 @@ image_covariance(Sig, sub = NULL, xlab = NULL, ylab = NULL, ...)
 \description{
 Uses the \code{image} function defined in \pkg{Matrix} package.
 }
-

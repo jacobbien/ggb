@@ -15,4 +15,3 @@
 \description{
 This function is adapted from the \pkg{hierNet} R package.
 }
-

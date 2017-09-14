@@ -17,4 +17,3 @@ between 1 and \code{length(x$Sig)}}
 \description{
 Uses image function from the \pkg{Matrix} R package.
 }
-
