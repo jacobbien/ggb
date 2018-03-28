@@ -1,3 +1,6 @@
+#julia <- "/Applications/Julia-0.6.app/Contents/Resources/julia/bin/julia"
+julia <- "/Applications/Julia-0.5.app/Contents/Resources/julia/bin/julia"
+
 ggb_local_convexjl <- function(S, lam, g, delta = NULL) {
   # Computes the local GGB estimator using Convex.jl
   #
@@ -8,7 +11,6 @@ ggb_local_convexjl <- function(S, lam, g, delta = NULL) {
   #  delta: (optional) nonnegative value giving minimum eigenvalue. If NULL,
   #         then no eigenvalue constraint included
   # this first line should be changed to location of julia on machine...
-  julia <- "/Applications/Julia-0.3.3.app/Contents/Resources/julia/bin/julia"
   p <- nrow(S)
   stopifnot(igraph::vcount(g) == p)
   D <- igraph::shortest.paths(g)
@@ -26,9 +28,9 @@ ggb_local_convexjl <- function(S, lam, g, delta = NULL) {
   if (is.null(delta)) {
     psd <- ""; delta <- 0
   } else
-    psd <- "pr.constraints += lambda_min(Sig) >= delta"
+    psd <- "pr.constraints += lambdamin(Sig) >= delta"
   pr.def <- paste(
-    paste0("pr = minimize(0.5 * sum_squares(S - Sig) ",
+    paste0("pr = minimize(0.5 * sumsquares(S - Sig) ",
            "+ lam * sum([w[i] * vecnorm(V[i],2) for i=1:sum(depths)]))"),
     "pr.constraints += (Sig == sum(V) + diagm(dd))",
     "i = 1",
@@ -98,7 +100,6 @@ ggb_global_convexjl <- function(S, lam, g, delta = NULL) {
   #  delta: (optional) nonnegative value giving minimum eigenvalue. If NULL,
   #         then no eigenvalue constraint included
   # this first line should be changed to location of julia on machine...
-  julia <- "/Applications/Julia-0.3.3.app/Contents/Resources/julia/bin/julia"
   p <- nrow(S)
   stopifnot(igraph::vcount(g) == p)
   D <- igraph::shortest.paths(g)
@@ -111,9 +112,9 @@ ggb_global_convexjl <- function(S, lam, g, delta = NULL) {
   if (is.null(delta)) {
     psd <- ""; delta <- 0
   } else
-    psd <- "pr.constraints += lambda_min(Sig) >= delta"
+    psd <- "pr.constraints += lambdamin(Sig) >= delta"
   pr.def <- paste(
-    paste0("pr = minimize(0.5 * sum_squares(S - Sig) ",
+    paste0("pr = minimize(0.5 * sumsquares(S - Sig) ",
            "+ lam * sum([w[d] * vecnorm(V[d],2) for d=1:depth]))"),
     "pr.constraints += (Sig == sum(V) + diagm(dd))",
     "for d = 1:depth",
