@@ -1,7 +1,8 @@
 #' ggb: Graph-Guided Banding for Covariance Estimation
 #'
 #' This package implements the two methods introduced in
-#' Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix"
+#' Bien, J. (2018) "Graph-Guided Banding of the Covariance Matrix." Journal of
+#' the American Statistical Association.
 #' \url{http://arxiv.org/abs/1606.00451}
 #'
 #' The main function is \code{\link{ggb}}.

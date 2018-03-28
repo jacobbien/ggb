@@ -4,6 +4,7 @@
 \name{ggb}
 \alias{ggb}
 \alias{ggb-package}
+\alias{ggb}
 \title{ggb: Graph-Guided Banding for Covariance Estimation}
 \usage{
 ggb(S, g, type = c("global", "local"), lambda = NULL, delta = NULL,
@@ -49,7 +50,8 @@ is "local".}
 }
 \description{
 This package implements the two methods introduced in
-Bien, J. (2016) "Graph-Guided Banding of the Covariance Matrix"
+Bien, J. (2018) "Graph-Guided Banding of the Covariance Matrix." Journal of
+the American Statistical Association.
 \url{http://arxiv.org/abs/1606.00451}
 
 Computes the global or local GGB estimator (depending on \code{type}
@@ -80,4 +82,3 @@ fit_local <- ggb(S, g, type = "local", nlam = 10)
 \seealso{
 \code{\link{cv_ggb}}
 }
-
